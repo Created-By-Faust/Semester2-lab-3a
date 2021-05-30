@@ -7,6 +7,7 @@ KeySpace2 *init_keySpace2(int len) {
         keySpace2[i].info = 0;
         keySpace2[i].key = 0;
     }
+    keySpace2[len].busy = -1;
     return keySpace2;
 }
 
@@ -14,20 +15,22 @@ Table *init_table() {
     Table *table = malloc(sizeof(Table));
     table->ks1 = 0;
 
-    table->msize2 = 100;
+    table->msize2 = 5;
+    table->csize1 = 5;
     table->ks2 = init_keySpace2(table->msize2);
 
     return table;
 }
 
 int hash(unsigned char *str, int len) {
-    unsigned long hash = 5381;
-    int c;
+    
+    unsigned int hash = 5381;
+    unsigned int c = 0;
 
-    while ((c = *str++))
-        hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+        while (c == *str++)
+            hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
 
-    return ((int) (hash % len));
+    return ((int) (hash % len)) ;
 }
 
 KeySpace2 *search(KeySpace2 *ptable, int size, char *k) {
@@ -80,7 +83,8 @@ int add_element(Table *table, int key1, char *key2, Record *record) {
     newItem->info = record;
     newItem->key1 = key1;
     newItem->key2 = key2;
-
+    if (table->csize1==0)
+        return -1;
     KeySpace2 *result = search(table->ks2, table->msize2, key2);
     if (result && result->info->key1 == key1) {
         // Добавить версию
@@ -127,7 +131,7 @@ int add_element(Table *table, int key1, char *key2, Record *record) {
             add_element_to_keySpace2(table->ks2, table->msize2, key2, newItem);
         }
     }
-
+    table->csize1-=1;
     return 0;
 }
 
@@ -183,7 +187,7 @@ void print_item_for_key1(Item *item) {
 }
 
 void print_item_for_key2(Item *item) {
-    printf("%s\t|\t%d\t|\tv%d\t", item->key2, item->key1, item->release);
+    printf("%s\t|\tv%d\t", item->key2, item->release);
     print_all_versions(item);
     printf("\n");
 }
@@ -210,6 +214,21 @@ void print_table(Table *table) {
     for (KeySpace1 *iter = table->ks1; iter; iter = iter->next) {
         print_item_for_key1(iter->info);
     }
+}
+
+void print_table_by_ks2(Table *table) {
+    KeySpace2 *iter = table->ks2;
+    int size = table->msize2;
+    for (int i = 0; i < size; ++i) {
+        if (iter[i].busy == 1) {
+            print_item_for_key2(iter[i].info);
+        } else
+                printf("-\n");
+        
+    }
+    /*for (KeySpace1 *iter = table->ks1; iter; iter = iter->next) {
+        print_item_for_key2(iter->info);
+    }*/
 }
 
 int delete_element_by_first_key(Table *table, int key1) {

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-
+#define msize 10
 typedef struct Record {
     float f1;
     float f2;
@@ -44,6 +44,7 @@ typedef struct Table {
 /*(см. предыдущие пункт задания):        */
 
     int msize2;
+    int csize1;
     /* размер области 2-го пространства ключей    */
 
 /*также может содержать опциональные поля с текущим количеством элементов в пространстве ключей */
@@ -51,7 +52,7 @@ typedef struct Table {
 /*(см. предыдущие пункт задания):        */
 } Table;
 
-Table *init_table();
+Table *init_table(void);
 
 void free_table(Table *table);
 
@@ -74,3 +75,7 @@ int delete_element_by_first_key(Table *table, int key1);
 int delete_element_by_second_key(Table *table, char *key2);
 
 int delete_element_by_compose_key(Table *table, int key1, char *key2);
+
+void print_table_by_ks2(Table *table);
+
+

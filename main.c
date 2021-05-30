@@ -59,12 +59,14 @@ int main() {
     do {
         printf("1 - add record to table\n"
                "2 - print table\n"
-               "3 - search element by key1\n"
-               "4 - search element by key2\n"
-               "5 - remove by key1 and key2\n"
-               "6 - remove by key1\n"
-               "7 - remove by key2\n"
-               "8 - search by key1 range\n"
+               "3 - print table by keyspace 2\n"
+               "4 - search element by key1\n"
+               "5 - search element by key2\n"
+               "6 - remove by key1 and key2\n"
+               "7 - remove by key1\n"
+               "8 - remove by key2\n"
+               "9 - search by key1 range\n"
+               
                "0 - exit\n");
         if (getInt(&buf)) {
             return 0;
@@ -114,10 +116,14 @@ int main() {
                 }
                 break;
             case 2:
-                printf("Table:\n");
+                printf("Table by 1 keyspace:\n");
                 print_table(table);
                 break;
             case 3:
+                printf("Table by 2 keyspace:\n");
+                print_table_by_ks2(table);
+                break;
+            case 4:
                 printf("Enter first key (int):\n");
                 key1 = 0;
                 if (getInt(&key1)) {
@@ -132,7 +138,7 @@ int main() {
                     printf("NOT_FOUND\n");
                 }
                 break;
-            case 4:
+            case 5:
                 printf("Enter second key (string):\n");
                 if (getStr(str)) {
                     free_table(table);
@@ -149,7 +155,7 @@ int main() {
                     printf("NOT_FOUND\n");
                 }
                 break;
-            case 5:
+            case 6:
                 printf("Enter first key (int):\n");
                 key1 = 0;
                 if (getInt(&key1)) {
@@ -169,7 +175,7 @@ int main() {
                 if (delete_element_by_compose_key(table, key1, key2) < 0)
                     printf("NOT_FOUND\n");
                 break;
-            case 6:
+            case 7:
                 printf("Enter first key (int):\n");
                 key1 = 0;
                 if (getInt(&key1)) {
@@ -179,7 +185,7 @@ int main() {
                 if (delete_element_by_first_key(table, key1) < 0)
                     printf("NOT FOUND\n");
                 break;
-            case 7:
+            case 8:
                 printf("Enter second key (string):\n");
                 if (getStr(str)) {
                     free_table(table);
@@ -191,7 +197,7 @@ int main() {
                 if (delete_element_by_second_key(table, key2) < 0)
                     printf("NOT FOUND\n");
                 break;
-            case 8:
+            case 9:
                 printf("Enter range start (int):\n");
                 int range_start = 0;
                 if (getInt(&range_start)) {
@@ -213,6 +219,7 @@ int main() {
                 }
                 free_table(range_search_result);
                 break;
+            
             case 0:
                 free_table(table);
                 return 0;
